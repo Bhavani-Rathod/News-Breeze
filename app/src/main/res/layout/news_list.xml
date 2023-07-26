@@ -12,10 +12,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:scrollbarSize="5dp"
         android:scrollbarThumbVertical="@drawable/scrollbar"
@@ -34,39 +32,32 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/search_bar"
+        android:background="@drawable/search_bar_backgrond"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <SearchView
             android:id="@+id/Search_bar_saved"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/search_bar"
+            android:background="@drawable/search_bar_backgrond"
             android:iconifiedByDefault="false"
             android:padding="8dp"
             android:layout_weight="3"
             android:queryBackground="@android:color/transparent"
-            android:queryHint="Search...."
-            android:theme="@style/SearchTheme"
-            >
-
+            android:queryHint="Search.."
+            android:theme="@style/SearchTheme">
 
         </SearchView>
 
         <ImageButton
             android:id="@+id/filter"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="85dp"
             android:layout_height="48dp"
             android:layout_marginEnd="8dp"
@@ -76,8 +67,9 @@
             app:layout_constraintStart_toEndOf="@+id/Search_bar_saved"
             app:layout_constraintTop_toTopOf="@+id/Search_bar_saved"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/baseline_filter_list_24"
-            android:contentDescription="@string/filter_btn"/>
+            app:srcCompat="@drawable/filter_icon"
+            android:contentDescription="@string/filter_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"/>
 
     </LinearLayout>
 
@@ -86,10 +78,8 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:layout_marginStart="43dp"
-        android:layout_marginLeft="43dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="43dp"
-        android:layout_marginRight="43dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

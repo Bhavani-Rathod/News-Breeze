@@ -12,9 +12,10 @@
     <string name="news_img">news_img</string>
     <string name="today">Today</string>
     <string name="saved">Saved</string>
-    <string name="news_headline">nijfvnefijvnfikvrfijsnhfniavnfjivndfijvndfvijnfvijnfvijdfnvdfijvndfijvndfifjvndvjdffnvdjivndjivndijvndijvnejivneijvnfivnvijnsfvijnfvejnvjivnuhbvuhbefvuhebfvuhebvuhe</string>
+    <string name="news_headline">vndvjdffnvdjivndjivndijvndijvnejivneijvnfivnvijnsfvijnfvejnvjivnuhbvuhbefvuhebfvuhebvuhe</string>
     <string name="textview">TextView</string>
     <string name="country">COUNTRY</string>
     <string name="india">India</string>
     <string name="us">US</string>
+    <string name="sort_by_date">Sort by: Date</string>
 </resources>

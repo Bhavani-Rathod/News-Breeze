@@ -25,13 +25,15 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
         var description = v.findViewById<TextView>(R.id.description)
         val savebutton = v.findViewById<Button>(R.id.savebutton)
         val readbutton = v.findViewById<Button>(R.id.readbutton)
-        val indicator = v.findViewById<ImageView>(R.id.indicator)
+        val indicator = v.findViewById<ImageView>(R.id.savedBtn)
 
     }
 
     var savedList = ArrayList<NewsArticle>()
     var beforesearch=ArrayList<NewsArticle>()
     var checklist: Array<String>?=null
+
+    private var newsList: List<NewsArticle> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.newslist_content, parent, false)
@@ -50,7 +52,7 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
         holder.description.text = cdata.description
 
 
-        if(checklist?.get(position) =="false"){holder.indicator.setImageResource(R.drawable.outline_bookmark_24)
+        if(checklist?.get(position) =="false"){holder.indicator.setImageResource(R.drawable.saved_icon)
 
             holder.indicator.setBackgroundResource(R.drawable.rounded)
             holder.savebutton.setText(R.string.saved)
@@ -61,7 +63,7 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
             if (checklist?.get(position) == "true") {
                 savedList.add(cdata)
                 holder.savebutton.setText(R.string.saved)
-                holder.indicator.setImageResource(R.drawable.outline_bookmark_24)
+                holder.indicator.setImageResource(R.drawable.saved_icon)
                 holder.indicator.setBackgroundResource(R.drawable.rounded)
                 checklist!![position]= "false"
 
@@ -117,6 +119,11 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
     }
     fun getCheckList():Array<String>{
         return checklist as Array<String>
+    }
+
+    fun sortByDate() {
+        newsList = newsList.sortedByDescending { it.publishedAt }
+        notifyDataSetChanged()
     }
 
 }

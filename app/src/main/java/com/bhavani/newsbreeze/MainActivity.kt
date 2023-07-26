@@ -1,10 +1,8 @@
 package com.bhavani.newsbreeze
 
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
@@ -40,11 +38,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val toolbar = findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
-        toolbar.setNavigationIcon(R.drawable.back_black)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         val searchbar = findViewById<SearchView>(R.id.Search_bar_saved)
         val recycleview = findViewById<RecyclerView>(R.id.savedrecycleview)
-        val savelistbutton = findViewById<ImageButton>(R.id.indicator)
+        val savelistbutton = findViewById<ImageButton>(R.id.savedBtn)
 
         recycleview.layoutManager = LinearLayoutManager(this)
         recycleview.adapter = recyclerviewadapter
@@ -57,13 +54,23 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("SAVED_LIST", recyclerviewadapter.getSavedlist())
             startActivity(intent)
         }
-        val filter = findViewById<ImageButton>(R.id.filter)
-        popupMenu = PopupMenu(this, filter)
-        popupMenu.inflate(R.menu.pop_up_menu)
-        filter.setOnClickListener {
-            menuclicklistner(popupMenu)
-        }
+        val filterButton = findViewById<ImageButton>(R.id.filter)
 
+        filterButton.setOnClickListener { v -> showPopupMenu(v) }
+
+    }
+
+    private fun showPopupMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+
+        // Inflate the popup menu layout
+        popupMenu.menuInflater.inflate(R.menu.menu_filter, popupMenu.menu)
+
+        // Set a click listener for the popup menu items
+        popupMenu.setOnMenuItemClickListener { item -> onOptionsItemSelected(item) }
+
+        // Show the popup menu
+        popupMenu.show()
     }
 
 
@@ -73,14 +80,11 @@ class MainActivity : AppCompatActivity() {
         outState.putSerializable("serial", recyclerviewadapter.getNewsList())
         outState.putSerializable("untouch", recyclerviewadapter.getUnTouchList())
         outState.putStringArray("checklist", recyclerviewadapter.getCheckList())
-        if(popupMenu.menu.findItem(R.id.IN).isChecked)outState.putInt("checker",1)
-        else outState.putInt("checker",2)
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        if(savedInstanceState.getInt("checker")==1){popupMenu.menu.findItem(R.id.IN).isChecked=true} else popupMenu.menu.findItem(R.id.US).isChecked=true
 
         val savedlist = savedInstanceState.getSerializable("key") as ArrayList<NewsArticle>
         recyclerviewadapter.savedList = savedlist
@@ -109,8 +113,6 @@ class MainActivity : AppCompatActivity() {
                         recyclerviewadapter.onChange(newsA.articles, array, 1)
                         recyclerviewadapter.savedList = savedlist
                     }
-
-                    Toast.makeText(this@MainActivity, "completed", Toast.LENGTH_SHORT).show()
 
                 }
 
@@ -161,36 +163,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-
-    private fun menuclicklistner(popupMenu: PopupMenu) {
-        popupMenu.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-            override fun onMenuItemClick(item: MenuItem?): Boolean {
-                when (item?.itemId) {
-                    R.id.IN,R.id.US -> {
-                        if (item != null) {
-                            if (!item.isChecked) {
-                                flag=0
-                                var country ="in"
-                                when(item.itemId) {
-                                    R.id.IN-> country="in"
-                                    R.id.US->country="us"
-                                }
-                                val news: Call<News> = RetrofitInstance.newsInstance.getHeadlines( country, 1)
-                                getNews(news)
-                                item.isChecked = true
-                                flag=1
-
-                            }
-                        }
-                        return true
-                    }
-                }
-                return false
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_sort_by_date -> {
+                // Handle "Sort by Date" click here
+                recyclerviewadapter.sortByDate()
+                return true
             }
-        })
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            popupMenu.gravity = Gravity.END
+            // Handle other menu items if any
         }
-        popupMenu.show()
+        return super.onOptionsItemSelected(item)
     }
 }

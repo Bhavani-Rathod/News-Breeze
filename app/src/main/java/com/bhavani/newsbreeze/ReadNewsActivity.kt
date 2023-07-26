@@ -19,7 +19,6 @@ class ReadNewsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_read_news)
 
         val toolbar = findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
-        toolbar.setNavigationIcon(R.drawable.back_white)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val newslist = intent.getSerializableExtra("PHOTO_TRANSFER") as NewsArticle
         val buttonText = intent.getStringExtra("save")
@@ -33,13 +32,13 @@ class ReadNewsActivity : AppCompatActivity() {
         if (buttonText == "Saved") {
             savebutton.text = buttonText
 
-            detailsave.setBackgroundResource(R.drawable.detail_outline_bookmark_24)
+            detailsave.setBackgroundResource(R.drawable.detail_bookmark_24)
         }
 
         savebutton.setOnClickListener {
             if (buttonText != "Saved") {
                 savebutton.setText(R.string.saved)
-                detailsave.setBackgroundResource(R.drawable.detail_outline_bookmark_24)
+                detailsave.setBackgroundResource(R.drawable.detail_bookmark_24)
 
             }
         }

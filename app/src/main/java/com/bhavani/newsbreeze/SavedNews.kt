@@ -22,7 +22,6 @@ class SavedNews : AppCompatActivity(), RvItemClickListner.OnRecyclerClickListner
         setContentView(R.layout.saved_news_activity)
 
         val toolbar=findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
-        toolbar.setNavigationIcon(R.drawable.back_black)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val savedrecycleview = findViewById<RecyclerView>(R.id.savedrecycleview)
 
