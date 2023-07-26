@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="roundImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+        <item name="color">#00BFA5</item>
+    </style>
+    <style name="SearchTheme" parent="android:Theme.Holo.Light.DarkActionBar"/>
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@color/white</item>
+        <item name="android:dropDownHorizontalOffset">-4dp</item>
+    </style>
+</resources>

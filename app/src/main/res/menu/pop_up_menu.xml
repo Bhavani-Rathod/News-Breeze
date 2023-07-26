@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/country"
+        android:icon="@drawable/outline_flag_24"
+        android:title="@string/country" />
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/IN"
+            android:checked="true"
+            android:title="@string/india" />
+        <item
+            android:id="@+id/US"
+            android:title="@string/us" />
+    </group>
+
+</menu>
