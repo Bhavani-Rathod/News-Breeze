@@ -11,9 +11,9 @@ import com.bhavani.newsbreeze.adapter.SavedNewsAdapter
 import com.bhavani.newsbreeze.models.NewsArticle
 import java.util.Locale
 
-class SavedNews : AppCompatActivity(), RvItemClickListner.OnRecyclerClickListner {
+class SavedNews : AppCompatActivity(), RvItemClickListener.OnRecyclerClickListener {
 
-    val copynewslist = ArrayList<NewsArticle>()
+    val copyNewsList = ArrayList<NewsArticle>()
     var originalnewslist = ArrayList<NewsArticle>()
     var savedListAdapter = SavedNewsAdapter(ArrayList())
 
@@ -23,23 +23,23 @@ class SavedNews : AppCompatActivity(), RvItemClickListner.OnRecyclerClickListner
 
         val toolbar=findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val savedrecycleview = findViewById<RecyclerView>(R.id.savedrecycleview)
+        val savedRecycleView = findViewById<RecyclerView>(R.id.savedrecycleview)
 
-        savedrecycleview.layoutManager = LinearLayoutManager(this)
-        savedrecycleview.addOnItemTouchListener(
-            RvItemClickListner(
+        savedRecycleView.layoutManager = LinearLayoutManager(this)
+        savedRecycleView.addOnItemTouchListener(
+            RvItemClickListener(
                 this,
-                savedrecycleview,
+                savedRecycleView,
                 this
             )
         )
-        savedrecycleview.adapter = savedListAdapter
+        savedRecycleView.adapter = savedListAdapter
 
         val savedlist = intent.getSerializableExtra("SAVED_LIST") as ArrayList<NewsArticle>
 
         originalnewslist.addAll(savedlist)
-        copynewslist.addAll(originalnewslist)
-        savedListAdapter.onChange(copynewslist)
+        copyNewsList.addAll(originalnewslist)
+        savedListAdapter.onChange(copyNewsList)
 
         search(findViewById(R.id.Search_bar_saved))
     }
@@ -56,16 +56,16 @@ class SavedNews : AppCompatActivity(), RvItemClickListner.OnRecyclerClickListner
 
             override fun onQueryTextChange(newText: String): Boolean {
                 if (newText.isNotEmpty()) {
-                    copynewslist.clear()
+                    copyNewsList.clear()
                     val searchText = newText.lowercase(Locale.getDefault())
                     originalnewslist.forEach {
                         if (it.title?.lowercase(Locale.getDefault())
                                 ?.contains(searchText) == true
                         ) {
-                            copynewslist.add(it)
+                            copyNewsList.add(it)
                         }
                     }
-                    savedListAdapter.onChange(copynewslist)
+                    savedListAdapter.onChange(copyNewsList)
                 } else {
                     savedListAdapter.onChange(originalnewslist)
                 }
@@ -74,7 +74,7 @@ class SavedNews : AppCompatActivity(), RvItemClickListner.OnRecyclerClickListner
         })
     }
 
-    override fun onclick(v: View, position: Int) {
+    override fun onclick(view: View, position: Int) {
         val news = savedListAdapter.getNews(position)
 
         if (news != null) {

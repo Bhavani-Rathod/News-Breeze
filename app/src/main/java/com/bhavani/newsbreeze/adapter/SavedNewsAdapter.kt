@@ -13,8 +13,8 @@ import com.squareup.picasso.Picasso
 class SavedNewsAdapter(private var newslist:List<NewsArticle>): RecyclerView.Adapter<SavedNewsAdapter.ImageViewHolder>() {
 
     class ImageViewHolder(v: View):RecyclerView.ViewHolder(v) {
-        var thumbnail=v.findViewById<ImageView>(R.id.savedimage)
-        var tittle=v.findViewById<TextView>(R.id.savedtitile)
+        var thumbNail=v.findViewById<ImageView>(R.id.savedimage)
+        var title=v.findViewById<TextView>(R.id.savedtitile)
         var date=v.findViewById<TextView>(R.id.saveddate)
     }
 
@@ -31,8 +31,8 @@ class SavedNewsAdapter(private var newslist:List<NewsArticle>): RecyclerView.Ada
 
         Picasso.get().load(cdata.urlToImage)
             .error(R.drawable.news_image)
-            .placeholder(R.drawable.news_image).into(holder.thumbnail)
-        holder.tittle.text=cdata.title
+            .placeholder(R.drawable.news_image).into(holder.thumbNail)
+        holder.title.text=cdata.title
         holder.date.text=cdata.publishedAt
     }
 

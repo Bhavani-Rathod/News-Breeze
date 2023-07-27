@@ -19,18 +19,18 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
     RecyclerView.Adapter<MainAdapter.ImageViewHolder>() {
     class ImageViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 
-        var thumbnail = v.findViewById<ImageView>(R.id.thumbnail)
-        var tittle = v.findViewById<TextView>(R.id.tittle)
+        var thumbNail = v.findViewById<ImageView>(R.id.thumbnail)
+        var title = v.findViewById<TextView>(R.id.tittle)
         var date = v.findViewById<TextView>(R.id.date)
         var description = v.findViewById<TextView>(R.id.description)
-        val savebutton = v.findViewById<Button>(R.id.savebutton)
-        val readbutton = v.findViewById<Button>(R.id.readbutton)
+        val saveButton = v.findViewById<Button>(R.id.savebutton)
+        val readButton = v.findViewById<Button>(R.id.readbutton)
         val indicator = v.findViewById<ImageView>(R.id.savedBtn)
 
     }
 
     var savedList = ArrayList<NewsArticle>()
-    var beforesearch=ArrayList<NewsArticle>()
+    var beforeSearch=ArrayList<NewsArticle>()
     var checklist: Array<String>?=null
 
     private var newsList: List<NewsArticle> = emptyList()
@@ -45,24 +45,24 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
         val cdata = newslist[position]
         Picasso.get().load(cdata.urlToImage)
             .error(R.drawable.news_image)
-            .placeholder(R.drawable.news_image).into(holder.thumbnail)
-        holder.tittle.text = cdata.title
-        val fulldate = Pattern.compile("T").split(cdata.publishedAt.toString())
-        holder.date.text = fulldate[0]
+            .placeholder(R.drawable.news_image).into(holder.thumbNail)
+        holder.title.text = cdata.title
+        val fullDate = Pattern.compile("T").split(cdata.publishedAt.toString())
+        holder.date.text = fullDate[0]
         holder.description.text = cdata.description
 
 
         if(checklist?.get(position) =="false"){holder.indicator.setImageResource(R.drawable.saved_icon)
 
             holder.indicator.setBackgroundResource(R.drawable.rounded)
-            holder.savebutton.setText(R.string.saved)
+            holder.saveButton.setText(R.string.saved)
     }
 
-        holder.savebutton.setOnClickListener {
+        holder.saveButton.setOnClickListener {
 
             if (checklist?.get(position) == "true") {
                 savedList.add(cdata)
-                holder.savebutton.setText(R.string.saved)
+                holder.saveButton.setText(R.string.saved)
                 holder.indicator.setImageResource(R.drawable.saved_icon)
                 holder.indicator.setBackgroundResource(R.drawable.rounded)
                 checklist!![position]= "false"
@@ -70,11 +70,11 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
             }
 
         }
-        holder.readbutton.setOnClickListener {
+        holder.readButton.setOnClickListener {
             val intent = Intent(context, ReadNewsActivity::class.java)
             intent.putExtra("PHOTO_TRANSFER", cdata)
             intent.putExtra("position",position)
-            intent.putExtra("save",holder.savebutton.text)
+            intent.putExtra("save",holder.saveButton.text)
             context.startActivity(intent)
         }
     }
@@ -91,7 +91,7 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
     }
 
     fun onChange(newList: List<NewsArticle>, Checklist:Array<String>, check:Int) {
-        if (check==1){ beforesearch = newList as ArrayList<NewsArticle> }
+        if (check==1){ beforeSearch = newList as ArrayList<NewsArticle> }
         newslist = newList
         notifyDataSetChanged()
         checklist=Checklist
@@ -106,7 +106,7 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
         newslist=prevList
     }
     fun getUnTouchList():ArrayList<NewsArticle>{
-        return beforesearch
+        return beforeSearch
     }
     fun getNewsList(): ArrayList<NewsArticle> {
         return newslist as ArrayList<NewsArticle>

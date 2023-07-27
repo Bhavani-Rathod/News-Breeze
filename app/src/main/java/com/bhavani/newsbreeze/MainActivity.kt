@@ -21,37 +21,40 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Locale
 import android.widget.*
+import com.bhavani.newsbreeze.databinding.ActivityMainBinding
 import java.util.*
 
 private var flag = 0
 
 class MainActivity : AppCompatActivity() {
 
-    var recyclerviewadapter = MainAdapter(ArrayList(), this)
-    private var cachelistnews: ArrayList<NewsArticle>? = null
-    val copynewslist = ArrayList<NewsArticle>()
-    var originalnewslist = ArrayList<NewsArticle>()
-    private lateinit var popupMenu: PopupMenu
+    private lateinit var binding: ActivityMainBinding
+
+    var rvAdapter = MainAdapter(ArrayList(), this)
+    private var cacheListNews: ArrayList<NewsArticle>? = null
+    var originalNewsList = ArrayList<NewsArticle>()
+    val copyNewsList = ArrayList<NewsArticle>()
+    private lateinit var popUpMenu: PopupMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         val toolbar = findViewById<View>(R.id.toolbar) as androidx.appcompat.widget.Toolbar
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
         val searchbar = findViewById<SearchView>(R.id.Search_bar_saved)
-        val recycleview = findViewById<RecyclerView>(R.id.savedrecycleview)
-        val savelistbutton = findViewById<ImageButton>(R.id.savedBtn)
+        val recycleView = findViewById<RecyclerView>(R.id.savedrecycleview)
 
-        recycleview.layoutManager = LinearLayoutManager(this)
-        recycleview.adapter = recyclerviewadapter
+        recycleView.layoutManager = LinearLayoutManager(this)
+        recycleView.adapter = rvAdapter
 
         getNews(RetrofitInstance.newsInstance.getHeadlines("in", 1))
         search(searchbar)
 
-        savelistbutton.setOnClickListener {
+        binding.savedBtn.setOnClickListener {
             val intent = Intent(this@MainActivity, SavedNews::class.java)
-            intent.putExtra("SAVED_LIST", recyclerviewadapter.getSavedlist())
+            intent.putExtra("SAVED_LIST", rvAdapter.getSavedlist())
             startActivity(intent)
         }
         val filterButton = findViewById<ImageButton>(R.id.filter)
@@ -60,46 +63,72 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun search(searchbar: SearchView) {
+        searchbar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                if (newText.isNotEmpty()) {
+                    copyNewsList.clear()
+                    val searchText = newText.lowercase(Locale.getDefault())
+                    originalNewsList.forEach {
+                        if ((it.title?.lowercase(Locale.getDefault())
+                                ?.contains(searchText) == true) || (it.description?.lowercase(Locale.getDefault())
+                                ?.contains(searchText) == true)
+                        ) {
+                            copyNewsList.add(it)
+                        }
+                    }
+                    rvAdapter.onChange2(copyNewsList)
+                } else {
+                    rvAdapter.onChange2(
+                        originalNewsList
+                    )
+                }
+                return true
+            }
+        })
+    }
+
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
 
-        // Inflate the popup menu layout
         popupMenu.menuInflater.inflate(R.menu.menu_filter, popupMenu.menu)
 
-        // Set a click listener for the popup menu items
         popupMenu.setOnMenuItemClickListener { item -> onOptionsItemSelected(item) }
 
-        // Show the popup menu
         popupMenu.show()
     }
 
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable("key", recyclerviewadapter.getSavedlist())
-        outState.putSerializable("serial", recyclerviewadapter.getNewsList())
-        outState.putSerializable("untouch", recyclerviewadapter.getUnTouchList())
-        outState.putStringArray("checklist", recyclerviewadapter.getCheckList())
+        outState.putSerializable("key", rvAdapter.getSavedlist())
+        outState.putSerializable("serial", rvAdapter.getNewsList())
+        outState.putSerializable("untouch", rvAdapter.getUnTouchList())
+        outState.putStringArray("checklist", rvAdapter.getCheckList())
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        val savedlist = savedInstanceState.getSerializable("key") as ArrayList<NewsArticle>
-        recyclerviewadapter.savedList = savedlist
-        cachelistnews = savedInstanceState.getSerializable("serial") as ArrayList<NewsArticle>
-        originalnewslist = savedInstanceState.getSerializable("untouch") as ArrayList<NewsArticle>
+        val savedList = savedInstanceState.getSerializable("key") as ArrayList<NewsArticle>
+        rvAdapter.savedList = savedList
+        cacheListNews = savedInstanceState.getSerializable("serial") as ArrayList<NewsArticle>
+        originalNewsList = savedInstanceState.getSerializable("untouch") as ArrayList<NewsArticle>
         val checklist = savedInstanceState.getStringArray("checklist") as Array<String>
-        recyclerviewadapter.beforesearch = originalnewslist
-        recyclerviewadapter.onChange(cachelistnews!!, checklist, 0)
+        rvAdapter.beforeSearch = originalNewsList
+        rvAdapter.onChange(cacheListNews!!, checklist, 0)
         flag = 1
 
     }
 
 
     @Suppress("UNCHECKED_CAST")
-    fun getNews(news:Call<News>) {
+    private fun getNews(news:Call<News>) {
         if (flag == 0) {
             flag = 1
             news.enqueue(object : Callback<News> {
@@ -107,11 +136,11 @@ class MainActivity : AppCompatActivity() {
                     val newsA = response.body()
                     if (newsA != null) {
                         newsA.articles = NullCheck.check(newsA.articles as ArrayList<NewsArticle>)
-                        originalnewslist = newsA.articles as ArrayList<NewsArticle>
-                        val savedlist = recyclerviewadapter.getSavedlist()
-                        val array = makeBooleanarray(newsA.articles.size)
-                        recyclerviewadapter.onChange(newsA.articles, array, 1)
-                        recyclerviewadapter.savedList = savedlist
+                        originalNewsList = newsA.articles as ArrayList<NewsArticle>
+                        val savedlist = rvAdapter.getSavedlist()
+                        val array = makeBooleanArray(newsA.articles.size)
+                        rvAdapter.onChange(newsA.articles, array, 1)
+                        rvAdapter.savedList = savedlist
                     }
 
                 }
@@ -125,7 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun makeBooleanarray(size: Int): Array<String> {
+    fun makeBooleanArray(size: Int): Array<String> {
         val array = arrayOfNulls<String>(size)
         for (i in array.indices) {
             array[i] = "true"
@@ -133,44 +162,12 @@ class MainActivity : AppCompatActivity() {
         return array as Array<String>
     }
 
-
-    private fun search(searchbar: SearchView) {
-        searchbar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                if (newText.isNotEmpty()) {
-                    copynewslist.clear()
-                    val searchText = newText.lowercase(Locale.getDefault())
-                    originalnewslist.forEach {
-                        if ((it.title?.lowercase(Locale.getDefault())
-                                ?.contains(searchText) == true) || (it.description?.lowercase(Locale.getDefault())
-                                ?.contains(searchText) == true)
-                        ) {
-                            copynewslist.add(it)
-                        }
-                    }
-                    recyclerviewadapter.onChange2(copynewslist)
-                } else {
-                    recyclerviewadapter.onChange2(
-                        originalnewslist
-                    )
-                }
-                return true
-            }
-        })
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_sort_by_date -> {
-                // Handle "Sort by Date" click here
-                recyclerviewadapter.sortByDate()
+                rvAdapter.sortByDate()
                 return true
             }
-            // Handle other menu items if any
         }
         return super.onOptionsItemSelected(item)
     }
