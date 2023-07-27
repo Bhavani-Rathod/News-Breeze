@@ -125,5 +125,4 @@ class MainAdapter(private var newslist: List<NewsArticle>, private val context: 
         newsList = newsList.sortedByDescending { it.publishedAt }
         notifyDataSetChanged()
     }
-
 }
